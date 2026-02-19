@@ -44,8 +44,8 @@ bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN)
 
 # Google Sheets
 json_str = os.getenv("GOOGLE_CREDENTIALS_JSON")
-#if not json_str:
-  #  raise ValueError("GOOGLE_CREDENTIALS_JSON не найден в переменных окружения!")
+if not json_str:
+    raise ValueError("GOOGLE_CREDENTIALS_JSON не найден в переменных окружения!")
 
 credentials_info = json.loads(json_str)
 credentials = service_account.Credentials.from_service_account_info(
