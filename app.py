@@ -153,3 +153,6 @@ if __name__ == "__main__":
         log_level="info" if ENV == "production" else "debug",
         reload=(ENV == "development"),
     )
+@app.get("/process-request")
+async def process_request_get():
+    return {"message": "Этот эндпоинт принимает только POST-запросы. Используйте POST для отправки заявки."}
