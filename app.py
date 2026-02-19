@@ -1,7 +1,10 @@
 import os
 import logging
 from contextlib import asynccontextmanager
+
+import json
 from fastapi import FastAPI, HTTPException
+from google.oauth2 import service_account
 from pydantic import BaseModel
 from dotenv import load_dotenv
 import gspread
@@ -36,10 +39,18 @@ if not all([TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, GOOGLE_SHEET_ID]):
 bot = telebot.TeleBot(TELEGRAM_BOT_TOKEN)
 
 # Google Sheets
-scopes = ["https://www.googleapis.com/auth/spreadsheets"]
-creds = Credentials.from_service_account_file(SERVICE_ACCOUNT_FILE, scopes=scopes)
-gc = gspread.authorize(creds)
-sheet = gc.open_by_key(GOOGLE_SHEET_ID).sheet1
+json_str = os.getenv("GOOGLE_CREDENTIALS_JSON")
+if not json_str:
+    raise ValueError("GOOGLE_CREDENTIALS_JSON не найден в переменных окружения!")
+
+credentials_info = json.loads(json_str)
+credentials = service_account.Credentials.from_service_account_info(
+    credentials_info,
+    scopes=["https://www.googleapis.com/auth/spreadsheets"]
+)
+
+gc = gspread.authorize(credentials)
+sheet = gc.open_by_key(os.getenv("GOOGLE_SHEET_ID")).sheet1
 
 # Инициализация заголовков
 if len(sheet.get_all_values()) == 0:
@@ -128,7 +139,7 @@ async def process_request(data: RequestData):
 
 if __name__ == "__main__":
     import uvicorn
-
+    import os
     workers = int(os.getenv("UVICORN_WORKERS", "1"))  # в проде ставь 2–4 в зависимости от CPU
     uvicorn.run(
         "app:app",
