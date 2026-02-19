@@ -126,7 +126,7 @@ async def process_request(data: RequestData):
         logger.error(f"Ошибка обработки заявки #{data.id}: {e}", exc_info=True)
         raise HTTPException(status_code=500, detail="Внутренняя ошибка сервера")
 
-if __name__ == "__app__":
+if __name__ == "__main__":
     import uvicorn
 
     workers = int(os.getenv("UVICORN_WORKERS", "1"))  # в проде ставь 2–4 в зависимости от CPU
