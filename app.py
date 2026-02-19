@@ -30,6 +30,10 @@ SERVICE_ACCOUNT_FILE = os.getenv("SERVICE_ACCOUNT_FILE", "service-account.json")
 DB_PATH = os.getenv("DB_PATH", "./bot_requests.db")  # ← в проде будет /data/bot_requests.db или подобное
 
 ENV = os.getenv("ENV", "development")  # production / development
+logger.info(f"TELEGRAM_BOT_TOKEN exists: {bool(os.getenv('TELEGRAM_BOT_TOKEN'))}")
+logger.info(f"TELEGRAM_CHAT_ID exists: {bool(os.getenv('TELEGRAM_CHAT_ID'))}")
+logger.info(f"GOOGLE_SHEET_ID exists: {bool(os.getenv('GOOGLE_SHEET_ID'))}")
+logger.info(f"Всего переменных в env: {len(os.environ)}")
 
 if not all([TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID, GOOGLE_SHEET_ID]):
     logger.critical("Отсутствуют обязательные переменные окружения")
